@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Maui.BestPrice.App.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+            <Entry Text="{Binding SearchTerm}"/>
+            <Button Text="Search" Command="{Binding SearchCommand}"/>
+
+            <CollectionView ItemsSource="{Binding Medicines}" SelectionMode="Single">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *">
+                            <!--<Image Source="{Binding Thumbnail}" Grid.RowSpan="2"/>-->
+                            <Label Text="{Binding Name}" Grid.Column="1"/>
+                            <Label Text="{Binding Price.Value, StringFormat='{0:c}'}" Grid.Column="1" Grid.Row="1"/>
+                            <Label Text="{Binding DrugStore}" TextColor="Red" Grid.Column="1" Grid.Row="2"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
+
