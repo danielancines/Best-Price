@@ -16,7 +16,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *">
-                            <!--<Image Source="{Binding Thumbnail}" Grid.RowSpan="2"/>-->
+                            <Image Source="{Binding Thumbnail}" Grid.RowSpan="3" WidthRequest="64" HeightRequest="64"/>
                             <Label Text="{Binding Name}" Grid.Column="1"/>
                             <Label Text="{Binding Price.Value, StringFormat='{0:c}'}" Grid.Column="1" Grid.Row="1"/>
                             <Label Text="{Binding DrugStore}" TextColor="Red" Grid.Column="1" Grid.Row="2"/>

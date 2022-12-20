@@ -25,12 +25,17 @@ public partial class MainPageViewModel : ObservableObject
 	private void Search()
 	{
 		this.Medicines.Clear();
+		var tasks = new List<Task>();
 
 		foreach (var searcher in this.MedicineSearchers)
 		{
-			this.Search(searcher);
-			//_= Task.Factory.StartNew(this.Search, searcher);
+			tasks.Add(Task.Run(() =>
+			{
+                this.Search(searcher);
+            }));
 		}
+
+		Task.WaitAll(tasks.ToArray());
 	}
 
 	private async void Search(IMedicineSearcher searcher)

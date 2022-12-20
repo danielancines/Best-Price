@@ -62,10 +62,22 @@
 	  <None Remove="Helpers\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Searchers\" />
 	  <Folder Include="Searchers\Types\" />
 	  <Folder Include="Models\" />
 	  <Folder Include="ViewModels\" />
 	  <Folder Include="Helpers\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Resources\SearchUrls.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>SearchUrls.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Update="Resources\SearchUrls.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>SearchUrls.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
 	</ItemGroup>
 </Project>

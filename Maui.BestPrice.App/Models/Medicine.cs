@@ -12,7 +12,7 @@ public class Medicine
     [JsonPropertyName("price")]
     public Price Price { get; set; }
 
-    [JsonPropertyName("thumbnail")]
+    [JsonPropertyName("image")]
     public string Thumbnail { get; set; }
 
     public string DrugStore { get; set; }
