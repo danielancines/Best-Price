@@ -4,15 +4,11 @@
              x:Class="Maui.BestPrice.App.MainPage">
 
     <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
-
-            <Entry Text="{Binding SearchTerm}"/>
-            <Button Text="Search" Command="{Binding SearchCommand}"/>
-
-            <CollectionView ItemsSource="{Binding Medicines}" SelectionMode="Single">
+        <Grid RowDefinitions="Auto, Auto, *" ColumnDefinitions="*, Auto">
+            <Entry Text="{Binding SearchTerm}" Margin="5"/>
+            <Button Text="Search" Command="{Binding SearchCommand}" Grid.Column="1" Margin="5"/>
+            <Label HorizontalOptions="Center" Text="Resultados Encontrados" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <CollectionView ItemsSource="{Binding Medicines}" SelectionMode="Single" Grid.Row="2" Grid.ColumnSpan="2">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *">
@@ -24,7 +20,7 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </VerticalStackLayout>
+        </Grid>
     </ScrollView>
 </ContentPage>
 
