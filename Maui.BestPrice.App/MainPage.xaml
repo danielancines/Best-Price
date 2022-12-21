@@ -11,11 +11,12 @@
             <CollectionView ItemsSource="{Binding Medicines}" SelectionMode="Single" Grid.Row="2" Grid.ColumnSpan="2">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *">
+                        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto">
                             <Image Source="{Binding Thumbnail}" Grid.RowSpan="3" WidthRequest="64" HeightRequest="64"/>
-                            <Label Text="{Binding Name}" Grid.Column="1"/>
-                            <Label Text="{Binding Price.Value, StringFormat='{0:c}'}" Grid.Column="1" Grid.Row="1"/>
-                            <Label Text="{Binding DrugStore}" TextColor="Red" Grid.Column="1" Grid.Row="2"/>
+                            <Label Text="{Binding Name}" Grid.Column="1" Grid.ColumnSpan="2"/>
+                            <Label Text="{Binding Price, StringFormat='Preço: {0:c}'}" TextColor="Red" Grid.Column="1" Grid.Row="1"/>
+                            <Label Text="{Binding OldPrice, StringFormat='De: {0:c}'}" Grid.Column="2" Grid.Row="1"/>
+                            <Label Text="{Binding DrugStore}" TextColor="Blue" Grid.Column="1" Grid.Row="2"/>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

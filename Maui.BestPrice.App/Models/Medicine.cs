@@ -6,21 +6,15 @@ namespace Maui.BestPrice.App.Models;
 
 public class Medicine
 {
-    [JsonPropertyName("name")]
     public string Name { get; set; }
 
-    [JsonPropertyName("price")]
-    public Price Price { get; set; }
+    public float Price { get; set; }
 
-    [JsonPropertyName("image")]
     public string Thumbnail { get; set; }
 
     public string DrugStore { get; set; }
-}
 
-public class Price
-{
-    [JsonPropertyName("value")]
-    public float Value { get; set; }
-}
+    public float OldPrice { get; set; }
 
+    public DateTime ExpireDate { get; set; }
+}

@@ -26,22 +26,35 @@ public class DrogaRaiaSearcher : IMedicineSearcher
 
         if (response.IsSuccessStatusCode)
         {
-            //var a = await response.Content.ReadAsStringAsync();
-            var medicinesRaw = (JsonElement)JsonSerializer.Deserialize<dynamic>(await response.Content.ReadAsStringAsync());
-            var medicines = JsonSerializer.Deserialize<IList<Medicine>>(medicinesRaw.GetProperty("data").GetProperty("search").GetProperty("products"));
-
-            foreach (var medicine in medicines)
-            {
-                medicine.DrugStore = "Droga Raia";
-            }
-
-            return medicines;
-
+            return DrogaraiaSerializer.Deserialize(await response.Content.ReadAsStringAsync());
         }
         else
         {
             return default(IEnumerable<Medicine>);
         }
+    }
+}
+
+public class DrogaraiaSerializer
+{
+    public static List<Medicine> Deserialize(string rawResult)
+    {
+        var medicines = new List<Medicine>();
+        var medicinesRaw = JsonSerializer.Deserialize<JsonElement>(rawResult).GetProperty("data").GetProperty("search").GetProperty("products");
+        foreach (var item in medicinesRaw.EnumerateArray())
+        {
+            var newMedicine = new Medicine();
+
+            newMedicine.Name = item.GetProperty("name").GetString();
+            newMedicine.OldPrice = (float)item.GetProperty("oldPrice").GetProperty("value").GetDecimal();
+            newMedicine.Price = (float)item.GetProperty("price").GetProperty("value").GetDecimal();
+            newMedicine.DrugStore = "Droga Raia";
+            newMedicine.Thumbnail = item.GetProperty("image").GetString();
+
+            medicines.Add(newMedicine);
+        }
+
+        return medicines;
     }
 }
 
