@@ -9,10 +9,6 @@ public class SaoJoaoSearcher : IMedicineSearcher
 {
     const string URL = @"https://apiappprd.saojoaofarmacias.com.br/api/v2/products/linx?terms={0}";
 
-    public SaoJoaoSearcher()
-	{
-	}
-
     public async Task<IEnumerable<Medicine>> SearchAsync(string searchTerm)
     {
         var httpClient = new HttpClient();
@@ -20,26 +16,11 @@ public class SaoJoaoSearcher : IMedicineSearcher
 
         if (response.IsSuccessStatusCode)
         {
-            //var medicinesRaw = (JsonElement)JsonSerializer.Deserialize<dynamic>(await response.Content.ReadAsStringAsync());
-            //var items = JsonSerializer.Deserialize<JsonElement>(medicinesRaw.GetProperty("data"));
-
-            //var medicines = new List<Medicine>();
-            //foreach (var item in items.EnumerateArray())
-            //{
-            //    var rawItem = item.GetProperty("item");
-            //    medicines.Add(new Medicine()
-            //    {
-            //        Name = rawItem.GetProperty("name").GetString(),
-            //        DrugStore = "São João",
-            //        Price = new Price() { Value = (float)rawItem.GetProperty("price").GetDecimal() }
-            //    });
-            //}
-
             return SaoJoaoSerializer.Deserialize(await response.Content.ReadAsStringAsync());
 
         } else
         {
-            return default(IEnumerable<Medicine>);
+            return new List<Medicine>();
         }
     }
 }
@@ -49,8 +30,12 @@ public class SaoJoaoSerializer
     public static List<Medicine> Deserialize(string rawResult)
     {
         var medicines = new List<Medicine>();
-        var medicinesRaw = JsonSerializer.Deserialize<JsonElement>(rawResult).GetProperty("data");
-        foreach (var item in medicinesRaw.EnumerateArray())
+
+        JsonElement data;
+        if (!JsonSerializer.Deserialize<JsonElement>(rawResult).TryGetProperty("data", out data))
+            return medicines;
+
+        foreach (var item in data.EnumerateArray())
         {
             var newMedicine = new Medicine();
             foreach (var image in item.GetProperty("imagens").EnumerateArray())

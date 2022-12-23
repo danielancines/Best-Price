@@ -21,8 +21,9 @@ public static class MauiProgram
 		builder.Services.AddSingleton<MainPage>();
 
 		builder.Services.AddTransient<IMedicineSearcher, DrogaRaiaSearcher>();
-        builder.Services.AddTransient<IMedicineSearcher, SaoJoaoSearcher>();
-        builder.Services.AddTransient<MainPageViewModel>();
+		builder.Services.AddTransient<IMedicineSearcher, SaoJoaoSearcher>();
+		builder.Services.AddTransient<IMedicineSearcher, PanvelSearcher>();
+		builder.Services.AddTransient<MainPageViewModel>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

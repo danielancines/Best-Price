@@ -10,9 +10,7 @@ namespace Maui.BestPrice.App.ViewModels;
 public partial class MainPageViewModel : ObservableObject
 {
 	readonly List<IMedicineSearcher> MedicineSearchers = new();
-
 	public ObservableCollection<Medicine> Medicines { get; set; } = new();
-
 	public string SearchTerm { get; set; }
 
 	public MainPageViewModel()
@@ -22,25 +20,25 @@ public partial class MainPageViewModel : ObservableObject
 	}
 
 	[RelayCommand]
-	private void Search()
+	private async void Search()
 	{
 		this.Medicines.Clear();
 		var tasks = new List<Task>();
 
 		foreach (var searcher in this.MedicineSearchers)
 		{
-			tasks.Add(Task.Run(() =>
+			tasks.Add(Task.Factory.StartNew(() =>
 			{
-                this.Search(searcher);
-            }));
+				this.Search(searcher);
+			}));
 		}
 
-		Task.WaitAll(tasks.ToArray());
+		await Task.WhenAll(tasks);
 	}
 
 	private async void Search(IMedicineSearcher searcher)
 	{
-        var medicines = await (searcher as IMedicineSearcher).SearchAsync(this.SearchTerm);
+        var medicines = await searcher.SearchAsync(this.SearchTerm);
         foreach (var medicine in medicines)
             this.Medicines.Add(medicine);
     }

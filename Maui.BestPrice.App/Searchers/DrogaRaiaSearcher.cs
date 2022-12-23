@@ -10,14 +10,9 @@ public class DrogaRaiaSearcher : IMedicineSearcher
 {
     const string URL = @"https://app-api-m2-prod.drogaraia.com.br/graphql";
 
-    public DrogaRaiaSearcher()
-    {
-    }
-
     public async Task<IEnumerable<Medicine>> SearchAsync(string searchTerm)
     {
         var httpClient = new HttpClient();
-        //httpClient.DefaultRequestHeaders.Add("sec-ch-ua-platform", "iOS");
         httpClient.DefaultRequestHeaders.Add("x-api-key", "5f308895c59fadb0b9ed43341c6eb33e41e78394d3ca970c5a285e91d25bc9cd");
 
         var content = new StringContent(SearchUrls.DrogaRaia.Replace("!searchTerm!", searchTerm), Encoding.UTF8, "application/json");
@@ -30,7 +25,7 @@ public class DrogaRaiaSearcher : IMedicineSearcher
         }
         else
         {
-            return default(IEnumerable<Medicine>);
+            return new List<Medicine>();
         }
     }
 }
@@ -40,8 +35,20 @@ public class DrogaraiaSerializer
     public static List<Medicine> Deserialize(string rawResult)
     {
         var medicines = new List<Medicine>();
-        var medicinesRaw = JsonSerializer.Deserialize<JsonElement>(rawResult).GetProperty("data").GetProperty("search").GetProperty("products");
-        foreach (var item in medicinesRaw.EnumerateArray())
+
+        JsonElement data;
+        if (!JsonSerializer.Deserialize<JsonElement>(rawResult).TryGetProperty("data", out data))
+            return medicines;
+
+        JsonElement search;
+        if (!JsonSerializer.Deserialize<JsonElement>(rawResult).TryGetProperty("search", out search))
+            return medicines;
+
+        JsonElement products;
+        if (!JsonSerializer.Deserialize<JsonElement>(rawResult).TryGetProperty("products", out products))
+            return medicines;
+
+        foreach (var item in products.EnumerateArray())
         {
             var newMedicine = new Medicine();
 

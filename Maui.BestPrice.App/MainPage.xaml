@@ -11,7 +11,7 @@
             <CollectionView ItemsSource="{Binding Medicines}" SelectionMode="Single" Grid.Row="2" Grid.ColumnSpan="2">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto">
+                        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="5">
                             <Image Source="{Binding Thumbnail}" Grid.RowSpan="3" WidthRequest="64" HeightRequest="64"/>
                             <Label Text="{Binding Name}" Grid.Column="1" Grid.ColumnSpan="2"/>
                             <Label Text="{Binding Price, StringFormat='Preço: {0:c}'}" TextColor="Red" Grid.Column="1" Grid.Row="1"/>

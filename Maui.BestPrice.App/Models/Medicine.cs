@@ -10,7 +10,7 @@ public class Medicine
 
     public float Price { get; set; }
 
-    public string Thumbnail { get; set; }
+    public ImageSource Thumbnail { get; set; }
 
     public string DrugStore { get; set; }
 
