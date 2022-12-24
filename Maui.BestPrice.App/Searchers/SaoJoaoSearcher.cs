@@ -18,7 +18,8 @@ public class SaoJoaoSearcher : IMedicineSearcher
         {
             return SaoJoaoSerializer.Deserialize(await response.Content.ReadAsStringAsync());
 
-        } else
+        }
+        else
         {
             return new List<Medicine>();
         }
@@ -35,13 +36,20 @@ public class SaoJoaoSerializer
         if (!JsonSerializer.Deserialize<JsonElement>(rawResult).TryGetProperty("data", out data))
             return medicines;
 
+        if (data.ValueKind != JsonValueKind.Array)
+            return medicines;
+
         foreach (var item in data.EnumerateArray())
         {
             var newMedicine = new Medicine();
             foreach (var image in item.GetProperty("imagens").EnumerateArray())
                 newMedicine.Thumbnail = image.GetString();
 
-            newMedicine.OldPrice = (float)item.GetProperty("precoDe").GetDecimal();
+            newMedicine.Price = (float)item.GetProperty("precoDe").GetDecimal();
+
+            JsonElement priceFor = item.GetProperty("precoPor");
+            if (priceFor.ValueKind != JsonValueKind.Null)
+                newMedicine.Price = (float)priceFor.GetDecimal();
 
             foreach (var promotion in item.GetProperty("promocoes").EnumerateArray())
             {

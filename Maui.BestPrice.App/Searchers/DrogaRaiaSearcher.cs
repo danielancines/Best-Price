@@ -41,11 +41,11 @@ public class DrogaraiaSerializer
             return medicines;
 
         JsonElement search;
-        if (!JsonSerializer.Deserialize<JsonElement>(rawResult).TryGetProperty("search", out search))
+        if (!data.TryGetProperty("search", out search))
             return medicines;
 
         JsonElement products;
-        if (!JsonSerializer.Deserialize<JsonElement>(rawResult).TryGetProperty("products", out products))
+        if (!search.TryGetProperty("products", out products))   
             return medicines;
 
         foreach (var item in products.EnumerateArray())

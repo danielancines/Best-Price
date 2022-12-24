@@ -1,4 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Maui.BestPrice.App.Helpers;
@@ -9,38 +12,93 @@ namespace Maui.BestPrice.App.ViewModels;
 
 public partial class MainPageViewModel : ObservableObject
 {
-	readonly List<IMedicineSearcher> MedicineSearchers = new();
-	public ObservableCollection<Medicine> Medicines { get; set; } = new();
-	public string SearchTerm { get; set; }
+    readonly List<IMedicineSearcher> MedicineSearchers = new();
+    public OrderedObservableCollection<Medicine> Medicines { get; set; } = new("Price", OrderedCollectionType.Float);
+    public string SearchTerm { get; set; }
 
-	public MainPageViewModel()
-	{
-		var searchers = DependencyContainerHelper.GetServices<IMedicineSearcher>();
-		this.MedicineSearchers.AddRange(searchers);
-	}
+    public MainPageViewModel()
+    {
+        
+        var searchers = DependencyContainerHelper.GetServices<IMedicineSearcher>();
+        this.MedicineSearchers.AddRange(searchers);
+    }
 
-	[RelayCommand]
-	private async void Search()
-	{
-		this.Medicines.Clear();
-		var tasks = new List<Task>();
+    public string FooterAppInfo { get; } = $"{AppInfo.Current.Name} - {AppInfo.Version}";
 
-		foreach (var searcher in this.MedicineSearchers)
-		{
-			tasks.Add(Task.Factory.StartNew(() =>
-			{
-				this.Search(searcher);
-			}));
-		}
+    [RelayCommand]
+    private void Search()
+    {
+        this.Medicines.Clear();
 
-		await Task.WhenAll(tasks);
-	}
+        foreach (var searcher in this.MedicineSearchers)
+            this.Search(searcher);
+    }
 
-	private async void Search(IMedicineSearcher searcher)
-	{
+    private async void Search(IMedicineSearcher searcher)
+    {
         var medicines = await searcher.SearchAsync(this.SearchTerm);
         foreach (var medicine in medicines)
-            this.Medicines.Add(medicine);
+            this.Medicines.AddOrdered(medicine);
     }
 }
 
+public enum OrderedCollectionType
+{
+    Float
+}
+
+public class OrderedObservableCollection<T> : ObservableCollection<T>
+{
+    public OrderedObservableCollection(string orderBy, OrderedCollectionType propertyType) : base()
+    {
+        this.OrderBy = orderBy;
+        this.PropertyType = propertyType;
+    }
+    public string OrderBy { get; init; }
+
+    public OrderedCollectionType PropertyType { get; init; }
+
+    public int AddOrdered(T item)
+    {
+        if (string.IsNullOrEmpty(this.OrderBy))
+            return -1;
+
+        var index = this.GetNextItemIndex(item);
+        this.Insert(index, item);
+
+        return index;
+    }
+
+    private int GetNextItemIndex(T newItem)
+    {
+        switch (this.PropertyType)
+        {
+            case OrderedCollectionType.Float:
+                return this.ProcessFloat(newItem);
+            default:
+                return this.Items.Count;
+        }
+    }
+
+    private int ProcessFloat(T newItem)
+    {
+        foreach (var item in this.Items)
+            if (this.ParseValueToFloat(item) > this.ParseValueToFloat(newItem))
+                return this.Items.IndexOf(item);
+
+        return this.Items.Count;
+    }
+
+    private float ParseValueToFloat(T item)
+    {
+        try
+        {
+            var property = item.GetType().GetProperty(this.OrderBy);
+            return (float)property.GetValue(item);
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+}

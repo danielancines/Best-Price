@@ -17,4 +17,9 @@ public class Medicine
     public float OldPrice { get; set; }
 
     public DateTime ExpireDate { get; set; }
+
+    public override string ToString()
+    {
+        return this.Price.ToString();
+    }
 }

@@ -1,16 +1,10 @@
-﻿using Maui.BestPrice.App.ViewModels;
-
-namespace Maui.BestPrice.App;
+﻿namespace Maui.BestPrice.App;
 
 public partial class MainPage : ContentPage
 {
-	int count = 0;
-
-	public MainPage(MainPageViewModel viewModel)
+	public MainPage(ViewModels.MainPageViewModel vm)
 	{
 		InitializeComponent();
-		this.BindingContext = viewModel;
+		this.BindingContext = vm;
 	}
 }
-
-
